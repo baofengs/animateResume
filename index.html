@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>animate resume demo</title>
+    <style show-me>
+    </style>
+    <style>
+        .tab {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- {{ cpdStyle }} -->
+        <div class="awesome" v-html="showStr"></div>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                style:
+`/* 给 div 加 awesome 样式 */
+div.awesome {
++    /* 先加个 border */
++    border: 1px dashed;
++    max-width: 70vw;
++    padding: 20px;
++    /* 居中吧 */
++    margin: 0 auto;
++    /* 设置一个炫酷的背景 */
++    background: linear-gradient(135deg, #0099F7 , #F11712);
++    /* 改变一下字体样式 */
++    color: #fff;
++    font-size: 16px;
++    line-height: 1.5;
++    /* 最后把丑陋的 border 干掉 */
++    border: none;
+}`,
+                cpdStyle: '',
+                styleDom: document.querySelector('style[show-me]'),
+                showStr: ''
+            },
+            created() {
+                this.showMe();
+            },
+            methods: {
+                showMe () {
+                    console.log('dry run...');
+                    const styleArr = [...this.style].map(item => {
+                        if (item == '+') {
+                            return '';
+                        }
+                        return item;
+                    });
+                    const showArr = [...this.style].map(item => {
+                        if (item == '+') {
+                            return '<span class="tab">';
+                        }
+                        if (item == '\n') {
+                            return '<br>'
+                        }
+                        return item;
+                    });
+                    console.log(styleArr);
+                    const timer = setInterval(() => {
+                        const tmp = showArr.shift();
+                        const tmpStyle = styleArr.shift();
+                        if (tmp) {
+                            this.showStr += tmp;
+                            this.cpdStyle += tmpStyle;
+                        } else {
+                            clearInterval(timer)
+                        }
+                        this.styleDom.innerText = this.cpdStyle;
+                    }, 50);
+                }
+            }
+        })
+    </script>
+</body>
+</html>
