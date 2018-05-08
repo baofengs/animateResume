@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>promoted</title>
+    <link rel="stylesheet" href="./prism.css">
+    <script src="prism.js"></script>
+    <style my-style>
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="fancy-text">
+            <pre v-html="normalnized"></pre>
+            <!-- <pre>{{normalnized}}</pre> -->
+        </div>
+        <!-- <pre v-html="inner"></pre> -->
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        const vue = new Vue({
+            el: '#app',
+            data () {
+                return {
+                    styleTag: document.querySelector('style[my-style]'),
+                    normalnized: '',
+                    original: `/* 先初始化所有样式 */
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    /* 合适的过渡效果让动画更好看 */
+    transition: cubic-bezier(.03,.98,.52,.99) all .5s;
+    overflow: scroll;
+}
+
+/* 来点炫酷的样式 */
+.fancy-text {
+    /* 先加个 border */
+    border: 1px dashed;
+    /* 设置一个合适的宽度 */
+    width: 50vw;
+    /* 再来一个合适的 padding */
+    padding: 10px 20px;
+    /* 居中吧 */
+    margin: auto;
+    /* 添加一个炫酷的背景 */
+    /* background: linear-gradient(135deg, transparent, #0099F7); */
+    /* 设置字体样式 */
+    /*color: #fff;*/
+    line-height: 1.6;
+    /* 最后把丑陋的 border 干掉 */
+    border: none;
+}
+`,
+                }
+            },
+            created () {
+                this.init();
+            },
+            methods: {
+                init () {
+                    const tmp = [...this.original];
+                    let n = 0,
+                        tmpStr = '';
+                    const timer = setInterval(() => {
+                        if (n == this.original.length - 1 || tmp[n] == undefined) {
+                            clearInterval(timer);
+                            return;
+                        }
+                        tmpStr += tmp[n++];
+                        this.normalnized = Prism.highlight(tmpStr, Prism.languages.css, 'css')
+                        this.styleTag.innerText = tmpStr;
+                    }, 50);
+                }
+            }
+        })
+    </script>
+</body>
+</html>
