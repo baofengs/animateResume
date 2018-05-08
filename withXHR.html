@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>with XHR</title>
+    <style my-style></style>
+</head>
+<body>
+    <pre class="code">
+    </pre>
+    <script>
+        const elCode = document.querySelector('.code');
+        const elStyle = document.querySelector('style[my-style]');
+
+        function getFile (url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                xhr.send();
+                xhr.onload = () => {
+                    if (xhr.status == 200) {
+                        resolve(xhr.responseText);
+                    } else {
+                        reject(new Error('can\'t get file'));
+                    }
+                }
+            });
+        }
+
+        function render (data) {
+            const styleArr = [...data];
+            let n      = 0,
+                tmpStr = '';
+            const timer = setInterval(() => {
+                if (n == styleArr.length - 1) {
+                    clearInterval(timer);
+                }
+                tmpStr += styleArr[n++];
+                elCode.innerText = tmpStr;
+                elStyle.innerText = tmpStr;
+            }, 50);
+        }
+
+        getFile('./foo.css')
+            .then(
+                (res) => {
+                    console.log(res);
+                    render(res);
+                }
+            );
+    </script>
+</body>
+</html>
